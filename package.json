@@ -1,0 +1,42 @@
+{
+  "name": "attemita",
+  "version": "1.0.0",
+  "description": "attemita is private/team person repository",
+  "author": "Mikihiro SUDA",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue,.ts ./",
+    "lintfix": "eslint --fix --ext .js,.vue,.ts ./"
+  },
+  "dependencies": {
+    "nuxt": "^2.0.0",
+    "ts-node": "^8.3.0",
+    "vue-property-decorator": "^8.2.1"
+  },
+  "devDependencies": {
+    "@nuxt/typescript": "^2.8.1",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "@vue/test-utils": "^1.0.0-beta.27",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^24.1.0",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-vue": "^5.2.2",
+    "jest": "^24.1.0",
+    "nodemon": "^1.18.9",
+    "prettier": "^1.18.2",
+    "stylelint-config-standard": "^18.3.0",
+    "vue-jest": "^3.0.3"
+  }
+}
