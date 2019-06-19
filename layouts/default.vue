@@ -12,9 +12,10 @@ export default class Default extends Vue {}
 </script>
 
 
-<style>
+<style lang="scss">
+
 html {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: $default-font-family;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -25,8 +26,8 @@ html {
 }
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
 }
