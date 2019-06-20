@@ -20,3 +20,22 @@ $ yarn run generate
 ```
 
 For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
+
+
+## firestore structure
+
+- users
+  - { userID }
+- teams
+  - { teamID } 
+    - name: *`string`*
+- people
+  - {personID}
+    - isPrivate: *`boolean`*
+    - ownerUser: *`string`* - firebae auth user ID
+    - ownerTeam: *`ref`* - to `team/{teamID}`
+    - name: *`string`*
+- belongs
+  - { belongID }
+    - team: *`ref`* - to `teams/{teamID}`
+    - user: *`string`* firebase auth user ID

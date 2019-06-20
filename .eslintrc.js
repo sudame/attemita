@@ -20,6 +20,7 @@ module.exports = {
         'quote-props': ['error', 'as-needed'],
         'no-var': 2,
         'node/no-unsupported-features/es-syntax': 0,
-        'object-curly-spacing': ["error", "always"]
+        'object-curly-spacing': ["error", "always"],
+        semi: ["error", "always"]
     },
 }

@@ -1,4 +1,3 @@
-
 export default {
     mode: 'universal',
     /*
@@ -36,6 +35,7 @@ export default {
   */
     modules: [
         '@nuxtjs/style-resources',
+        '@nuxtjs/dotenv',
     ],
     styleResources: {
         // your settings here
@@ -50,5 +50,5 @@ export default {
     */
     // extend(config, ctx) {
     // }
-    }
-}
+    },
+};
