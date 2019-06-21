@@ -13,6 +13,11 @@
       @click="submit()">
       送信
     </button>
+    <div>
+      <button @click="fire()">
+        fire
+      </button>
+    </div>
     <div
       v-for="person in people"
       :key="person.name">
@@ -31,6 +36,8 @@
 <script lang="ts">
 import firebase from '@/plugins/firebase';
 import { Component, Vue } from 'vue-property-decorator';
+import { getModule } from 'vuex-module-decorators';
+import  attemitaModule from '@/store/attemita';
 
 import { firestore } from 'firebase';
 
@@ -56,6 +63,13 @@ class Person {
 export default class Index extends Vue {
     private name: string = '';
     private people: Person[] = [];
+
+    private attemitaStore = getModule(attemitaModule, this.$store);
+
+
+    fire() {
+        console.log(this.attemitaStore.hoge);
+    }
 
     mounted () {
         firebase.auth().onAuthStateChanged(user => {

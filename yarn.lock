@@ -1303,6 +1303,11 @@
     mustache "^2.3.0"
     stack-trace "0.0.10"
 
+"@posva/vuefire-core@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@posva/vuefire-core/-/vuefire-core-2.0.0.tgz#1bda6ba22c4677b2b8f02a25c778cff3a7144c79"
+  integrity sha512-Lkb9gg7HGatrHP4QYEMGkxc58X1FGAALQKKD/JWZQZboKFNGB1WCGarvHpAVtZ0N2KAeT5xKLmuqIQ4E4gmMBw==
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -10507,10 +10512,22 @@ vue@^2.6.10:
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
 
+vuex-module-decorators@^0.9.9:
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/vuex-module-decorators/-/vuex-module-decorators-0.9.9.tgz#3d278531cbd41435b3cba255a6e4db8a2bb3bf5b"
+  integrity sha512-SxCyuv9FEwUc2jKfCtAHaMDwsC0acVLBeZo6OUlrA8e+tzT5qwvnZevrRIpPJY4nfiiBvIBTYFu+3l+c2Bemeg==
+
 vuex@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.1.1.tgz#0c264bfe30cdbccf96ab9db3177d211828a5910e"
   integrity sha512-ER5moSbLZuNSMBFnEBVGhQ1uCBNJslH9W/Dw2W7GZN23UQA69uapP5GTT9Vm8Trc0PzBSVt6LzF3hGjmv41xcg==
+
+vuexfire@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/vuexfire/-/vuexfire-3.0.0.tgz#42dd6c6232af9029c0f8c60808eb3538f8b2da1a"
+  integrity sha512-/IqR3wLA0P9Ga5yLfjbHCdEygzYMn33UfHiayhUXv7aI0GTKpYC0yFRMKgdmRWl7EjUre7SbLCVcfRxGpkBkVQ==
+  dependencies:
+    "@posva/vuefire-core" "^2.0.0"
 
 w3c-hr-time@^1.0.1:
   version "1.0.1"
