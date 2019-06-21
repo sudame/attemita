@@ -1,6 +1,14 @@
 <template>
   <div>
     <h1>team page {{ id }}</h1>
+    <div>
+      <input
+        v-model="email"
+        type="email" />
+      <button @click="addUser()">
+        ユーザを追加する
+      </button>
+    </div>
     <div
       v-for="user in users"
       :key="user">
@@ -22,9 +30,11 @@ import firebase from '@/plugins/firebase';
 })
 export default class TeamPage extends Vue {
 
+    private users: string[] = [];
+    private email: string = '';
+
     mounted() {
-        const teamRef: firebase.firestore.DocumentReference = firebase.firestore().collection('teams').doc(this.id);
-        firebase.firestore().collection('belongs').where('team', '==', teamRef).get().then(qSnap => {
+        firebase.firestore().collection('belongs').where('team', '==', this.teamRef).get().then(qSnap => {
             const updated: string[] = [];
             qSnap.forEach(dSnap => {
                 updated.push(dSnap.data()['user']);
@@ -33,10 +43,23 @@ export default class TeamPage extends Vue {
         });
     }
 
-    private users: string[] = [];
+    addUser() {
+        firebase.firestore().collection('users').where('email', '==', this.email).get().then(qSnap => {
+            qSnap.forEach(dSnap => {
+                firebase.firestore().collection('belongs').add({
+                    team: this.teamRef,
+                    user: dSnap.id,
+                });
+            });
+        });
+    }
 
     get id(): string {
         return this.$route.params['id'];
+    }
+
+    get teamRef(): firebase.firestore.DocumentReference {
+        return firebase.firestore().collection('teams').doc(this.id);
     }
 }
 

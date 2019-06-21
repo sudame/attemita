@@ -46,7 +46,9 @@ export default class LoginPage extends Vue {
                 displayName: this.username,
             });
             this.user = res.user;
-            firebase.firestore().collection('users').doc(res.user.uid).set({});
+            firebase.firestore().collection('users').doc(res.user.uid).set({
+                email: this.user.email,
+            });
         }
     }
 }

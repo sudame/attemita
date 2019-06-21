@@ -16,9 +16,9 @@ export default ({ route, redirect, store }): void => {
 
         attemitaStore.setUser(user);
 
-        if(routeName === 'login' && isAuthed) {
+        if((routeName === 'login' || routeName === 'signup') && isAuthed) {
             return redirect('/');
-        } else if (routeName !== 'login' && !isAuthed) {
+        } else if ((routeName !== 'login' && routeName !== 'signup') && !isAuthed) {
             return redirect('/login');
         }
     });
