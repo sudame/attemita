@@ -22,16 +22,22 @@
 <script lang="ts">
 import firebase from '@/plugins/firebase';
 import { Vue, Component } from 'vue-property-decorator';
+import { getModule } from 'vuex-module-decorators';
 
-@Component
+import attemitaModule from '@/store/attemita';
+
+@Component({
+    middleware: ['authenticate'],
+})
 export default class LoginPage extends Vue {
+    private attemitaStore = getModule(attemitaModule, this.$store);
 
     private email: string = '';
     private password: string = '';
 
     async signin() {
-        const res =  await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-        console.log(res.user);
+        await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+        this.$router.push('/');
     }
 
 }

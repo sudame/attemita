@@ -13,11 +13,6 @@
       @click="submit()">
       送信
     </button>
-    <div>
-      <button @click="fire()">
-        fire
-      </button>
-    </div>
     <div
       v-for="person in people"
       :key="person.name">
@@ -35,9 +30,9 @@
 
 <script lang="ts">
 import firebase from '@/plugins/firebase';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
-import  attemitaModule from '@/store/attemita';
+import  attemitaModule, { User } from '@/store/attemita';
 
 import { firestore } from 'firebase';
 
@@ -59,22 +54,24 @@ class Person {
     }
 }
 
-@Component
+@Component({
+    middleware: ['authenticate'],
+})
 export default class Index extends Vue {
-    private name: string = '';
-    private people: Person[] = [];
-
     private attemitaStore = getModule(attemitaModule, this.$store);
 
+    private name: string = '';
+    private people: Person[] = [];
+    private unsubscribe: firebase.Unsubscribe | null = null;
 
-    fire() {
-        console.log(this.attemitaStore.hoge);
+    get user(): User | null{
+        return this.attemitaStore.user;
     }
 
     mounted () {
-        firebase.auth().onAuthStateChanged(user => {
+        this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
             if(user !== null){
-                console.log(user.uid);
+                this.attemitaStore.setUser(user);
                 firebase.firestore().collection('people').where('ownerUser', '==', user.uid).onSnapshot(qSnap => {
                     const updated: Person[] = [];
                     let idx = 0;
@@ -86,6 +83,7 @@ export default class Index extends Vue {
                 });
             } else {
                 this.people = [];
+                if(this.unsubscribe !== null) this.unsubscribe();
             }
         });
     }
@@ -104,6 +102,5 @@ export default class Index extends Vue {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             });}
     }
-
 }
 </script>

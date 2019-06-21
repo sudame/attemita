@@ -41,7 +41,6 @@ export default class LoginPage extends Vue {
 
     async signup() {
         const res =  await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
-        console.log(res.user);
         if(res.user !== null) {
             await res.user.updateProfile({
                 displayName: this.username,
