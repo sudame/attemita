@@ -41,7 +41,7 @@ export default class ResizableTextArea extends Vue {
       const endPos: number = textarea.selectionEnd;
 
       const before: string = sentence.substr(0, pos);
-      const word = '\n## ';
+      const word = '## ';
       const after: string = sentence.substr(pos, len);
       this.value = before + word + after;
       this.$emit('input', this.value);

@@ -40,26 +40,40 @@ input {
     padding: 0.5em;
     margin: 6px;
     border: 1px solid $black;
+    width: 400px;
+    max-width: 100%;
+    height: 2.5em;
+
+    &:focus {
+      border-width: 2px;
+    }
   }
+}
+
+textarea {
+  @extend input[type="text"];
+
+  height: 5em;
+  resize: none;
 }
 
 input[type="button"],
 button,
 a.button {
+  font-family: $default-font-family;
+  font-size: 1rem;
   border: 1px solid $black;
   background-color: white;
-  padding: 1em;
-  margin: 6px;
-  font-weight: $font-heavy;
-}
-
-textarea {
-  border: 1px solid $black;
-  background: white;
-  resize: none;
   padding: 0.5em;
   margin: 6px;
-  font-family: $default-font-family;
+  font-weight: $font-heavy;
+
+  &:hover,
+  &:focus {
+    background-color: $black;
+    color: white;
+    cursor: pointer;
+  }
 }
 
 .field {

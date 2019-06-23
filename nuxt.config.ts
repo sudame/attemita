@@ -14,6 +14,9 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { href:'https://fonts.googleapis.com/css?family=Noto+Sans+JP:300,400,900&display=swap&subset=japanese', rel:'stylesheet' }
 
+    ],
+    script: [
+      { src: 'https://kit.fontawesome.com/4f673b0b85.js', defer: true }
     ]
   },
   /*

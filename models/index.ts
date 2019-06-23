@@ -22,16 +22,20 @@ export class Person {
   public ownerUser: string | null = null;
   public ownerTeam: string | null = null;
   public createdAt: Date;
+  public what: string = '';
 
-  public constructor(id: string, name: string, ownerUser: string, ownerTeam: string, createdAt: Date) {
+  public constructor(id: string, name: string, ownerUser: string, ownerTeam: string, createdAt: Date, what: string) {
     this.id = id;
     this.name = name;
     this.ownerUser = ownerUser;
     this.ownerTeam = ownerTeam;
     this.createdAt = createdAt;
+    if(what !== null) this.what = what;
   }
 
   public static fromDocData(id: string, data: firestore.DocumentData): Person {
-    return new Person(id, data['name'], data['ownerUser'], data['ownerTeam'], (data['createdAt'] as firestore.Timestamp).toDate());
+    if(data['createdAt'] === null) data['createdAt'] = new Date();
+    else data['createdAt'] = (data['createdAt'] as firestore.Timestamp).toDate();
+    return new Person(id, data['name'], data['ownerUser'], data['ownerTeam'], data['createdAt'] , data['what']);
   }
 }

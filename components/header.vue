@@ -22,7 +22,7 @@ import { User } from '../models';
   }
 })
 export default class AtmtHeader extends Vue {
-  @Prop({ default: undefined }) readonly user: User | undefined = undefined;
+  @Prop(undefined) readonly user: User | undefined;
 }
 </script>
 
