@@ -34,22 +34,22 @@ import { User } from 'firebase';
 @Component
 export default class LoginPage extends Vue {
 
-    private email: string = '';
-    private password: string = '';
-    private username: string = '';
-    private user: User | null  = null;
+  private email: string = '';
+  private password: string = '';
+  private username: string = '';
+  private user: User | null  = null;
 
-    async signup() {
-        const res =  await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
-        if(res.user !== null) {
-            await res.user.updateProfile({
-                displayName: this.username,
-            });
-            this.user = res.user;
-            firebase.firestore().collection('users').doc(res.user.uid).set({
-                email: this.user.email,
-            });
-        }
+  async signup() {
+    const res =  await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
+    if(res.user !== null) {
+      await res.user.updateProfile({
+        displayName: this.username,
+      });
+      this.user = res.user;
+      firebase.firestore().collection('users').doc(res.user.uid).set({
+        email: this.user.email,
+      });
     }
+  }
 }
 </script>

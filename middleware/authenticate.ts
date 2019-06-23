@@ -4,22 +4,22 @@ import { getModule } from 'vuex-module-decorators';
 
 export default ({ route, redirect, store }): void => {
 
-    if(process.server) return;
-    const attemitaStore = getModule(attemitaModule, store);
-    const routeName: string = route.name;
+  if(process.server) return;
+  const attemitaStore = getModule(attemitaModule, store);
+  const routeName: string = route.name;
 
-    console.log('[authenticate]', routeName);
+  console.log('[authenticate]', routeName);
 
-    firebase.auth().onAuthStateChanged((user): void => {
-        console.log('[authenticate]' , user ? user.uid : user);
-        const isAuthed: boolean = user !== null;
+  firebase.auth().onAuthStateChanged((user): void => {
+    console.log('[authenticate]' , user ? user.uid : user);
+    const isAuthed: boolean = user !== null;
 
-        attemitaStore.setUser(user);
+    attemitaStore.setUser(user);
 
-        if((routeName === 'login' || routeName === 'signup') && isAuthed) {
-            return redirect('/');
-        } else if ((routeName !== 'login' && routeName !== 'signup') && !isAuthed) {
-            return redirect('/login');
-        }
-    });
+    if((routeName === 'login' || routeName === 'signup') && isAuthed) {
+      return redirect('/');
+    } else if ((routeName !== 'login' && routeName !== 'signup') && !isAuthed) {
+      return redirect('/login');
+    }
+  });
 };

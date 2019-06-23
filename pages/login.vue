@@ -27,18 +27,18 @@ import { getModule } from 'vuex-module-decorators';
 import attemitaModule from '@/store/attemita';
 
 @Component({
-    middleware: ['authenticate'],
+  middleware: ['authenticate'],
 })
 export default class LoginPage extends Vue {
-    private attemitaStore = getModule(attemitaModule, this.$store);
+  private attemitaStore = getModule(attemitaModule, this.$store);
 
-    private email: string = '';
-    private password: string = '';
+  private email: string = '';
+  private password: string = '';
 
-    async signin() {
-        await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-        this.$router.push('/');
-    }
+  async signin() {
+    await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+    this.$router.push('/');
+  }
 
 }
 </script>

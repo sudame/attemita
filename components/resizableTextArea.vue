@@ -16,14 +16,14 @@ export default class ResizableTextArea extends Vue {
     private textArea: HTMLTextAreaElement | null = null;
 
     mounted () {
-        this.textArea = this.$el as HTMLTextAreaElement;
+      this.textArea = this.$el as HTMLTextAreaElement;
     }
 
     onInput(e: UIEvent) {
-        const t = e.target as HTMLTextAreaElement;
-        t.style.height = '';
-        t.style.height = t.scrollHeight + 'px';
-        this.$emit('input', t.value);
+      const t = e.target as HTMLTextAreaElement;
+      t.style.height = '';
+      t.style.height = t.scrollHeight + 'px';
+      this.$emit('input', t.value);
     }
 }
 </script>

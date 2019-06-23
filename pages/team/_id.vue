@@ -23,44 +23,44 @@ import { isNullOrUndefined } from 'util';
 import firebase from '@/plugins/firebase';
 
 @Component({
-    validate: function({ params }): boolean {
-        const id = params['id'];
-        return !isNullOrUndefined(id) && id !== '';
-    }
+  validate: function({ params }): boolean {
+    const id = params['id'];
+    return !isNullOrUndefined(id) && id !== '';
+  }
 })
 export default class TeamPage extends Vue {
 
-    private users: string[] = [];
-    private email: string = '';
+  private users: string[] = [];
+  private email: string = '';
 
-    mounted() {
-        firebase.firestore().collection('belongs').where('team', '==', this.teamRef).get().then(qSnap => {
-            const updated: string[] = [];
-            qSnap.forEach(dSnap => {
-                updated.push(dSnap.data()['user']);
-            });
-            this.users = updated;
+  mounted() {
+    firebase.firestore().collection('belongs').where('team', '==', this.teamRef).get().then(qSnap => {
+      const updated: string[] = [];
+      qSnap.forEach(dSnap => {
+        updated.push(dSnap.data()['user']);
+      });
+      this.users = updated;
+    });
+  }
+
+  addUser() {
+    firebase.firestore().collection('users').where('email', '==', this.email).get().then(qSnap => {
+      qSnap.forEach(dSnap => {
+        firebase.firestore().collection('belongs').add({
+          team: this.teamRef,
+          user: dSnap.id,
         });
-    }
+      });
+    });
+  }
 
-    addUser() {
-        firebase.firestore().collection('users').where('email', '==', this.email).get().then(qSnap => {
-            qSnap.forEach(dSnap => {
-                firebase.firestore().collection('belongs').add({
-                    team: this.teamRef,
-                    user: dSnap.id,
-                });
-            });
-        });
-    }
+  get id(): string {
+    return this.$route.params['id'];
+  }
 
-    get id(): string {
-        return this.$route.params['id'];
-    }
-
-    get teamRef(): firebase.firestore.DocumentReference {
-        return firebase.firestore().collection('teams').doc(this.id);
-    }
+  get teamRef(): firebase.firestore.DocumentReference {
+    return firebase.firestore().collection('teams').doc(this.id);
+  }
 }
 
 </script>

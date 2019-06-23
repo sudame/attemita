@@ -17,6 +17,8 @@ module.exports = {
             },
         }],
         quotes: [2, 'single'],
+        'indent': [2,2],
+        '@typescript-eslint/indent': [2,2],
         'quote-props': ['error', 'as-needed'],
         'no-var': 2,
         'node/no-unsupported-features/es-syntax': 0,
