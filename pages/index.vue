@@ -11,7 +11,7 @@
     <button
       type="submit"
       @click="submit()">
-      送信
+      人を登録する
     </button>
     <div>
       <input
@@ -21,6 +21,8 @@
         チームを作る
       </button>
     </div>
+    <resizable-text-area
+      v-model="textAreaText" />
     <div>
       <h3>teams</h3>
       <div
@@ -35,15 +37,10 @@
       <h3>people</h3>
       <div
         v-for="person in people"
-        :key="person.name">
-        <table>
-          <tr
-            v-for="(val, key) in person"
-            :key="key">
-            <td>{{ key }}</td>
-            <td>{{ val }}</td>
-          </tr>
-        </table>
+        :key="person.id">
+        <nuxt-link :to="`/person/${person.id}`">
+          {{ person.name }}
+        </nuxt-link>
       </div>
     </div>
   </div>
@@ -54,6 +51,8 @@ import firebase from '@/plugins/firebase';
 import { Component, Vue } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
 import  attemitaModule, { User } from '@/store/attemita';
+
+import resizableTextArea from '@/components/resizableTextArea.vue';
 
 import { firestore } from 'firebase';
 
@@ -68,25 +67,30 @@ class Team {
 }
 
 class Person {
+    id: string;
     name: string;
     ownerUser: string | null = null;
     ownerTeam: string | null = null;
     createdAt: Date;
 
-    constructor(name: string, ownerUser: string, ownerTeam: string, createdAt: Date) {
+    constructor(id: string, name: string, ownerUser: string, ownerTeam: string, createdAt: Date) {
+        this.id = id;
         this.name = name;
         this.ownerUser = ownerUser;
         this.ownerTeam = ownerTeam;
         this.createdAt = createdAt;
     }
 
-    static fromDocData(data: firestore.DocumentData): Person {
-        return new Person(data['name'], data['ownerUser'], data['ownerTeam'], (data['createdAt'] as firestore.Timestamp).toDate());
+    static fromDocData(id: string, data: firestore.DocumentData): Person {
+        return new Person(id, data['name'], data['ownerUser'], data['ownerTeam'], (data['createdAt'] as firestore.Timestamp).toDate());
     }
 }
 
 @Component({
     middleware: ['authenticate'],
+    components: {
+        resizableTextArea
+    }
 })
 export default class Index extends Vue {
     private attemitaStore = getModule(attemitaModule, this.$store);
@@ -96,6 +100,8 @@ export default class Index extends Vue {
     private teams: Team[] = [];
     private unsubscribe: firebase.Unsubscribe | null = null;
     private teamname: string = '';
+
+    private textAreaText: string = '';
 
 
     get user(): User | null{
@@ -110,9 +116,14 @@ export default class Index extends Vue {
                     const updated: Person[] = [];
                     let idx = 0;
                     qSnap.forEach((dSnap) => {
-                        updated[idx] = Person.fromDocData(dSnap.data());
+                        updated[idx] = Person.fromDocData(dSnap.id, dSnap.data());
                         idx++;
                     });
+
+                    updated.sort((a, b) => {
+                        return b.createdAt.getTime() - a.createdAt.getTime() ;
+                    });
+
                     this.people = updated;
                 });
 
@@ -138,7 +149,7 @@ export default class Index extends Vue {
     }
 
     async createTeam() {
-        if(this.user !== null){
+        if(this.user !== null && this.teamname !== ''){
             const ref = await firebase.firestore().collection('teams').add({
                 name: this.teamname
             });
@@ -155,11 +166,10 @@ export default class Index extends Vue {
     }
 
     submit() {
-        const user = firebase.auth().currentUser;
-        if(user !== null){
+        if(this.user !== null && this.name !== ''){
             firebase.firestore().collection('people').add({
                 name: this.name,
-                ownerUser: user.uid,
+                ownerUser: this.user.uid,
                 ownerTeam: null,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             });}
