@@ -1,15 +1,42 @@
-$default-font-family: 'Noto Sans JP', sans-serif;
+$default-font-family: "Noto Sans JP", sans-serif;
 
 $font-light: 300;
 $font-normal: 400;
 $font-heavy: 900;
 
+$bold: $font-heavy;
+
 $black: #333;
 
+html,
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.bold {
+  font-weight: $font-heavy;
+}
+
 input {
-  &[type='text'],
-  &[type='password'],
-  &[type='email'] {
+  &[type="text"],
+  &[type="password"],
+  &[type="email"] {
+    @extend html;
+
     padding: 0.5em;
     margin: 6px;
     border: 1px solid $black;
@@ -32,4 +59,14 @@ textarea {
   resize: none;
   padding: 0.5em;
   margin: 6px;
+  font-family: $default-font-family;
+}
+
+.field {
+  margin: 12px 0;
+
+  label {
+    display: block;
+    font-weight: $bold;
+  }
 }

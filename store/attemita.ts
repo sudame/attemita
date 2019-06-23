@@ -1,11 +1,6 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators';
 import * as firebase from 'firebase';
-
-export interface User {
-  uid: string | null;
-  displayName: string | null;
-  email: string | null;
-}
+import { User } from '@/models';
 
 @Module({ name: 'attemita', namespaced: true, stateFactory: true })
 export default class AttemitaModule extends VuexModule {

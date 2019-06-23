@@ -1,10 +1,6 @@
 <template>
   <div class="container">
-    <div>
-      <button @click="logout()">
-        ログアウト
-      </button>
-    </div>
+    <atmt-header :user="user" />
     <input
       v-model="name"
       type="text" />
@@ -50,46 +46,21 @@
 import firebase from '@/plugins/firebase';
 import { Component, Vue } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
-import  attemitaModule, { User } from '@/store/attemita';
+import  attemitaModule from '@/store/attemita';
+import { User } from '@/models';
 
 import resizableTextArea from '@/components/resizableTextArea.vue';
+import atmtHeader from '@/components/header.vue';
 
 import { firestore } from 'firebase';
 
-class Team {
-  id: string;
-  name: string;
-
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.name = name;
-  }
-}
-
-class Person {
-  id: string;
-  name: string;
-  ownerUser: string | null = null;
-  ownerTeam: string | null = null;
-  createdAt: Date;
-
-  constructor(id: string, name: string, ownerUser: string, ownerTeam: string, createdAt: Date) {
-    this.id = id;
-    this.name = name;
-    this.ownerUser = ownerUser;
-    this.ownerTeam = ownerTeam;
-    this.createdAt = createdAt;
-  }
-
-  static fromDocData(id: string, data: firestore.DocumentData): Person {
-    return new Person(id, data['name'], data['ownerUser'], data['ownerTeam'], (data['createdAt'] as firestore.Timestamp).toDate());
-  }
-}
+import { Person, Team } from '@/models';
 
 @Component({
   middleware: ['authenticate'],
   components: {
-    resizableTextArea
+    resizableTextArea,
+    atmtHeader,
   }
 })
 export default class Index extends Vue {
@@ -159,10 +130,6 @@ export default class Index extends Vue {
         user: this.user.uid,
       });
     }
-  }
-
-  logout() {
-    firebase.auth().signOut();
   }
 
   submit() {

@@ -46,7 +46,9 @@
     "jest": "^24.1.0",
     "nodemon": "^1.18.9",
     "prettier": "^1.18.2",
+    "stylelint": "^10.1.0",
     "stylelint-config-standard": "^18.3.0",
+    "stylelint-scss": "^3.8.0",
     "vue-jest": "^3.0.3"
   }
 }
