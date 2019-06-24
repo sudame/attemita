@@ -80,8 +80,8 @@
               <td>
                 <ul>
                   <li
-                    v-for="topic in extractTopics(person.extra)"
-                    :key="topic">
+                    v-for="(topic, idx) in extractTopics(person.extra)"
+                    :key="topic + idx">
                     {{ topic }}
                   </li>
                 </ul>
@@ -231,10 +231,6 @@ table {
 
     ul {
       list-style: "・" inside;
-
-      li {
-        font-weight: $bold;
-      }
     }
 
     &.link {

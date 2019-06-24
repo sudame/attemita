@@ -3,7 +3,7 @@
     <atmt-header :user="user" />
     <div
       v-if="person !== null"
-      id="peron">
+      id="person">
       <h1>{{ person.name }} さん</h1>
       <section>
         <h2>会った日時</h2>
@@ -20,16 +20,16 @@
         <p>{{ team(person.ownerTeam) }}</p>
       </section>
       <section>
-        <h2>Topics</h2>
+        <h2>トピック</h2>
         <div
           v-for="topic in extractTopics(person.extra)"
-          :key="topic">
+          :key="topic.title + topic.content"
+          class="topic">
           <h3 v-if="topic.title">
             {{ topic.title }}
           </h3>
-          <p v-if="topic.content">
-            {{ topic.content }}
-          </p>
+          <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
+          <p v-if="topic.content">{{ topic.content }}</p>
         </div>
       </section>
     </div>
@@ -45,6 +45,8 @@ import { getModule } from 'vuex-module-decorators';
 import { User, Person, Team } from '../../models';
 import moment from 'moment';
 
+moment.locale('ja');
+
 class Topic {
   public title: string;
   public content: string;
@@ -53,6 +55,8 @@ class Topic {
     if(title.indexOf('## ') === 0)
       title = title.substr(3);
     this.title = title;
+    if(content.indexOf('\n') === 0)
+      content = content.substr(1);
     this.content = content;
   }
 }
@@ -110,7 +114,8 @@ export default class PersonPage extends Vue {
         topic = lines[i];
         content = '';
       } else {
-        content += lines[i];
+        content += '\n' + lines[i];
+        console.log(content);
       }
     }
     if(topic !== '' || content !== '')
@@ -120,3 +125,55 @@ export default class PersonPage extends Vue {
 }
 
 </script>
+
+<style lang="scss" scoped>
+#person {
+  max-width: 798px;
+  width: 95vw;
+  margin: auto;
+
+  h1 {
+    margin: 24px 0;
+    padding: 0 24px;
+    border-bottom: 5px double $black;
+  }
+
+  section {
+    margin: 24px auto;
+    border: 1px solid $black;
+    padding: 12px 0;
+
+    h2 {
+      padding: 0 24px 12px;
+      margin-bottom: 12px;
+      border-bottom: 2px dashed $black;
+    }
+
+    & > p {
+      padding: 0 24px;
+    }
+
+    .topic {
+      padding: 12px 24px 0;
+      margin-bottom: 12px;
+
+      h3 {
+        margin-bottom: 0.5em;
+      }
+
+      p {
+        white-space: pre-line;
+      }
+
+      &:first-of-type {
+        padding-top: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+</style>
+
