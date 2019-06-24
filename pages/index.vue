@@ -172,8 +172,9 @@ export default class Index extends Vue {
     return moment(d).format('MM月DD日');
   }
 
-  extractTopics(t: string): string[] {
-    const lines: string[] = t.split('\n');
+  extractTopics(text: string): string[] {
+    if(text === undefined) return [];
+    const lines: string[] = text.split('\n');
     const rawTopics = lines.filter(l => l.indexOf('## ') === 0);
     const topics: string[] = rawTopics.map(topic => topic.substr(3)).filter(d => !!d && d.length > 0);
     return topics;

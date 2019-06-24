@@ -19,6 +19,24 @@ const listenPeople = (uid: string, atmtStore: atmtModule): void => {
   });
 };
 
+const listenTeamPeople = (tid: string, atmtStore: atmtModule): void => {
+  firebase.firestore().collection('people').where('ownerTeam', '==', tid).onSnapshot((qSnap): void => {
+    const updated: Person[] = [];
+    let idx = 0;
+    qSnap.forEach((dSnap): void => {
+      updated[idx] = Person.fromDocData(dSnap.id, dSnap.data());
+      idx++;
+    });
+    updated.sort((a, b): number => {
+      return b.createdAt.getTime() - a.createdAt.getTime() ;
+    });
+    atmtStore.setTeamPeople({
+      teamID: tid,
+      people: updated,
+    });
+  });
+};
+
 const getTeam = (dSnap: firebase.firestore.DocumentSnapshot): Promise<Team | null> => {
   const data = dSnap.data();
   if(data === null || data === undefined) return Promise.reject();
@@ -38,6 +56,9 @@ const listenTeam = (uid: string, atmtStore: atmtModule): void => {
       queue.push(getTeam(dSnap));
     });
     const updated: Team[] = (await Promise.all(queue)).filter((v): boolean => !!v) as Team[];
+    updated.forEach((team): void => {
+      listenTeamPeople(team.id, atmtStore);
+    });
     atmtStore.setTeams(Object.freeze(updated) as Team[]);
   });
 };

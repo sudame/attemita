@@ -5,6 +5,19 @@
       v-if="person !== null"
       id="person">
       <h1>{{ person.name }} さん</h1>
+      <div class="manager">
+        <vue-select
+          v-model="selectedTeam"
+          placeholder="共有チーム"
+          :options="teams"
+          label="name" />
+        <button @click="updateBelong(true)">
+          更新
+        </button>
+        <button @click="updateBelong(false)">
+          共有をやめる
+        </button>
+      </div>
       <section>
         <h2>会った日時</h2>
         <p>
@@ -15,9 +28,9 @@
         <h2>何の人</h2>
         <p>{{ person.what }}</p>
       </section>
-      <section v-if="person.ownerTeam">
+      <section v-if="person.ownerTeam !== null">
         <h2>共有中のチーム</h2>
-        <p>{{ team(person.ownerTeam) }}</p>
+        <p>{{ teamName(person.ownerTeam) }}</p>
       </section>
       <section>
         <h2>トピック</h2>
@@ -37,13 +50,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { isNullOrUndefined } from 'util';
 import AtmtHeader from '@/components/header.vue';
 import  attemitModule from '@/store/attemita';
 import { getModule } from 'vuex-module-decorators';
 import { User, Person, Team } from '../../models';
 import moment from 'moment';
+import VueSelect from 'vue-select';
+import firebase from '@/plugins/firebase';
 
 moment.locale('ja');
 
@@ -67,11 +82,13 @@ class Topic {
     return !isNullOrUndefined(id) && id !== '';
   },
   components: {
-    AtmtHeader
+    AtmtHeader,
+    VueSelect
   }
 })
 export default class PersonPage extends Vue {
   private attemitaStore = getModule(attemitModule, this.$store);
+  private selectedTeam: Team | null = null;
 
   get id(): string {
     return this.$route.params['id'];
@@ -83,8 +100,18 @@ export default class PersonPage extends Vue {
     return person ? person : null;
   }
 
+  @Watch('person', { immediate: true })
+  onPersonChanged() {
+    if(this.person === null) return;
+    this.selectedTeam = this.team(this.person.ownerTeam);
+  }
+
   get user(): User | null{
     return this.attemitaStore.user;
+  }
+
+  get teams(): Team[] {
+    return this.attemitaStore.teams;
   }
 
   team(teamID: string | null): Team | null {
@@ -92,6 +119,13 @@ export default class PersonPage extends Vue {
     const team: Team | undefined = this.attemitaStore.teams.filter(t => teamID === t.id)[0];
     if(team === undefined) return null;
     return team;
+  }
+
+  teamName(teamID: string | null): string | null {
+    if(teamID === null) return null;
+    const team: Team | undefined = this.attemitaStore.teams.filter(t => teamID === t.id)[0];
+    if(team === undefined) return null;
+    return team.name;
   }
 
   readableDate(d: Date): string {
@@ -122,11 +156,54 @@ export default class PersonPage extends Vue {
       topics.push(new Topic(topic, content));
     return topics;
   }
+
+  updateBelong(isTeam: boolean): void {
+    const target = firebase.firestore().collection('people').doc(this.id);
+    if(isTeam) {
+      if(this.selectedTeam === null) return;
+      target.set({
+        ownerTeam: this.selectedTeam.id,
+        ownerUser: null,
+      }, { merge: true });
+    } else {
+      if(this.user === null) return;
+      target.set({
+        ownerTeam: null,
+        ownerUser: this.user.uid,
+      }, { merge: true });
+    }
+  }
 }
 
 </script>
 
+<style lang="scss">
+/* setting for v-select */
+$vs-controls-color: $black;
+$vs-border-radius: 0;
+$vs-border-color: $black;
+
+@import '@/node_modules/vue-select/src/scss/vue-select.scss';
+</style>
+
 <style lang="scss" scoped>
+
+.manager {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+
+  button {
+    padding: 12px 1.5em;
+  }
+}
+
+.v-select {
+  min-width: 200px;
+  margin-right: 12px;
+}
+
 #person {
   max-width: 798px;
   width: 95vw;
