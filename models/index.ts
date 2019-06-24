@@ -44,19 +44,21 @@ export class Person {
   public ownerTeam: string | null = null;
   public createdAt: Date;
   public what: string = '';
+  public extra: string = '';
 
-  public constructor(id: string, name: string, ownerUser: string, ownerTeam: string, createdAt: Date, what: string) {
+  public constructor(id: string, name: string, ownerUser: string, ownerTeam: string, createdAt: Date, what?: string, extra?: string) {
     this.id = id;
     this.name = name;
     this.ownerUser = ownerUser;
     this.ownerTeam = ownerTeam;
     this.createdAt = createdAt;
-    if(what !== null) this.what = what;
+    if(what !== undefined && extra !== null) this.what = what;
+    if(extra !== undefined && extra !== null) this.extra = extra;
   }
 
   public static fromDocData(id: string, data: firestore.DocumentData): Person {
     if(data['createdAt'] === null) data['createdAt'] = new Date();
     else data['createdAt'] = (data['createdAt'] as firestore.Timestamp).toDate();
-    return new Person(id, data['name'], data['ownerUser'], data['ownerTeam'], data['createdAt'] , data['what']);
+    return new Person(id, data['name'], data['ownerUser'], data['ownerTeam'], data['createdAt'] , data['what'], data['extra']);
   }
 }

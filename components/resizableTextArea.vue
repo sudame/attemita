@@ -15,7 +15,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 export default class ResizableTextArea extends Vue {
     @Prop(String) readonly placeholder: string | undefined;
 
-    value: string = '';
+    value: string = '## ';
 
     mounted () {
       const t: HTMLTextAreaElement = this.$el as HTMLTextAreaElement;
@@ -41,7 +41,9 @@ export default class ResizableTextArea extends Vue {
       const endPos: number = textarea.selectionEnd;
       let word = '';
       const before: string = sentence.substr(0, pos);
-      if(before[before.length - 1] === '\n') {
+      if(before[before.length - 1] === undefined) {
+        word = '## ';
+      } else if(before[before.length - 1] === '\n') {
         if(before[before.length - 2] === '\n') word = '## ';
         else word = '\n## ';
       } else {

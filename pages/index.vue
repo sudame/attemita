@@ -53,6 +53,7 @@
               <th>誰</th>
               <th>いつ</th>
               <th>何の人</th>
+              <th>トピック</th>
             </tr>
           </thead>
           <tbody>
@@ -74,6 +75,16 @@
               </td>
               <td>
                 {{ person.what }}
+              </td>
+              <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
+              <td>
+                <ul>
+                  <li
+                    v-for="topic in extractTopics(person.extra)"
+                    :key="topic">
+                    {{ topic }}
+                  </li>
+                </ul>
               </td>
             </nuxt-link>
           </tbody>
@@ -148,6 +159,7 @@ export default class Index extends Vue {
         what: this.what,
         ownerUser: this.user.uid,
         ownerTeam: null,
+        extra: this.textAreaText === '## ' ? '' : this.textAreaText,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });}
   }
@@ -158,6 +170,13 @@ export default class Index extends Vue {
     if(moment(d).year() != moment().year())
       return moment(d).format('YY年MM月DD日');
     return moment(d).format('MM月DD日');
+  }
+
+  extractTopics(t: string): string[] {
+    const lines: string[] = t.split('\n');
+    const rawTopics = lines.filter(l => l.indexOf('## ') === 0);
+    const topics: string[] = rawTopics.map(topic => topic.substr(3)).filter(d => !!d && d.length > 0);
+    return topics;
   }
 }
 </script>
@@ -204,6 +223,19 @@ table {
   th {
     border: 1px solid $black;
     padding: 1em;
+
+    ul,
+    ol {
+      padding: 0;
+    }
+
+    ul {
+      list-style: "・" inside;
+
+      li {
+        font-weight: $bold;
+      }
+    }
 
     &.link {
       a,
