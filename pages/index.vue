@@ -94,8 +94,6 @@ import moment from 'moment';
 import resizableTextArea from '@/components/resizableTextArea.vue';
 import atmtHeader from '@/components/header.vue';
 
-import { firestore } from 'firebase';
-
 import { Person, Team } from '@/models';
 
 moment.locale('ja');
@@ -112,8 +110,6 @@ export default class Index extends Vue {
 
   private name: string = '';
   private what: string = '';
-  private people: Person[] = [];
-  private teams: Team[] = [];
   private unsubscribe: firebase.Unsubscribe | null = null;
   private teamname: string = '';
 
@@ -124,45 +120,12 @@ export default class Index extends Vue {
     return this.attemitaStore.user;
   }
 
-  mounted () {
-    this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if(user !== null){
-        this.attemitaStore.setUser(user);
-        firebase.firestore().collection('people').where('ownerUser', '==', user.uid).onSnapshot(qSnap => {
-          const updated: Person[] = [];
-          let idx = 0;
-          qSnap.forEach((dSnap) => {
-            console.log(dSnap.data());
-            updated[idx] = Person.fromDocData(dSnap.id, dSnap.data());
-            idx++;
-          });
+  get people(): Person[] {
+    return this.attemitaStore.people;
+  }
 
-          updated.sort((a, b) => {
-            return b.createdAt.getTime() - a.createdAt.getTime() ;
-          });
-
-          this.people = updated;
-        });
-
-        firebase.firestore().collection('belongs').where('user', '==', user.uid).onSnapshot(qSnap => {
-          const updated: Team[] = [];
-          qSnap.forEach(dSnap => {
-            const teamRef: firestore.DocumentReference = dSnap.data()['team'];
-            teamRef.get().then(teamSnap => {
-              const data = teamSnap.data();
-              if(data !== undefined){
-                updated.push(new Team(teamSnap.id, data['name']));
-              }
-            });
-          });
-          this.teams = updated;
-        });
-      } else {
-        this.people = [];
-        this.teams = [];
-        if(this.unsubscribe !== null) this.unsubscribe();
-      }
-    });
+  get teams(): Team[] {
+    return this.attemitaStore.teams;
   }
 
   async createTeam() {

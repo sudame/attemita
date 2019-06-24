@@ -32,7 +32,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/init.client.ts'
+    '~/plugins/init.client.ts',
+    '~/plugins/init2.client.ts',
   ],
   /*
   ** Nuxt.js modules

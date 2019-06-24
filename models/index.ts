@@ -6,6 +6,27 @@ export interface User {
   email: string | null;
 }
 
+export class CUser implements User {
+  public uid: string | null;
+  public displayName: string | null;
+  public email: string | null;
+
+  public constructor(uid: string, displayName: string, email: string) {
+    this.uid =uid;
+    this.displayName = displayName;
+    this.email = email;
+  }
+
+  public static fromFirebase(fUser: firebase.User | null): CUser | null {
+    if(fUser === null) return null;
+    const uid: string | null = fUser.uid;
+    const displayName: string  = fUser.displayName || '';
+    const email: string = fUser.email || '';
+    return new CUser(uid, displayName, email);
+  }
+
+}
+
 export class Team {
   public id: string;
   public name: string;
