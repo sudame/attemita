@@ -60,6 +60,8 @@ textarea {
 input[type="button"],
 button,
 a.button {
+  text-decoration: none;
+  color: $black;
   font-family: $default-font-family;
   font-size: 1rem;
   border: 1px solid $black;

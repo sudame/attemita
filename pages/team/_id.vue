@@ -1,6 +1,9 @@
 <template>
   <div>
-    <h1>team page {{ id }}</h1>
+    <atmt-header :user="user" />
+    <h1 v-if="team">
+      チーム「 {{ team.name }} 」
+    </h1>
     <div>
       <input
         v-model="email"
@@ -10,9 +13,9 @@
       </button>
     </div>
     <div
-      v-for="user in users"
-      :key="user">
-      {{ user }}
+      v-for="(name, id) in users"
+      :key="id">
+      {{ name }}
     </div>
   </div>
 </template>
@@ -21,25 +24,36 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { isNullOrUndefined } from 'util';
 import firebase from '@/plugins/firebase';
+import atmtHeader from '@/components/header.vue';
+import atmtModule from '@/store/attemita';
+import { getModule } from 'vuex-module-decorators';
+import { Team, User } from '../../models';
 
 @Component({
   validate: function({ params }): boolean {
     const id = params['id'];
     return !isNullOrUndefined(id) && id !== '';
+  },
+  components: {
+    atmtHeader
   }
 })
 export default class TeamPage extends Vue {
 
-  private users: string[] = [];
   private email: string = '';
+  private atmtStore: atmtModule = getModule(atmtModule, this.$store);
+  private users: {string: string} | {} = {};
 
   mounted() {
-    firebase.firestore().collection('belongs').where('team', '==', this.teamRef).get().then(qSnap => {
-      const updated: string[] = [];
+    const ref = firebase.firestore().collection('teams').doc(this.id);
+    firebase.firestore().collection('belongs').where('team', '==', ref).get().then(qSnap => {
+      console.log(qSnap.size);
       qSnap.forEach(dSnap => {
-        updated.push(dSnap.data()['user']);
+        console.log(dSnap.data());
+        this.getUserName(dSnap.data()['user']).then(name => {
+          this.$set(this.users, dSnap.data()['user'], name);
+        });
       });
-      this.users = updated;
     });
   }
 
@@ -52,6 +66,26 @@ export default class TeamPage extends Vue {
         });
       });
     });
+  }
+
+  get user(): User | null {
+    return this.atmtStore.user;
+  }
+
+  async getUserName(id: string): Promise<string> {
+    const dSnap = await firebase.firestore().collection('users').doc(id).get();
+    const data = dSnap.data();
+    if(data === undefined || data === null) return '';
+    return data['displayName'] || '';
+  }
+
+  get teams(): Team[] {
+    return this.atmtStore.teams;
+  }
+
+  get team(): Team | null{
+    const team = this.teams.filter(t => t.id === this.id)[0];
+    return team || null;
   }
 
   get id(): string {

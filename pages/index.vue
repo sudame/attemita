@@ -34,7 +34,7 @@
             チームを作る
           </button>
         </div> -->
-      <div>
+      <!-- <div>
         <h3>teams</h3>
         <div
           v-for="team in teams"
@@ -43,52 +43,10 @@
             {{ team.name }} | {{ team.id }}
           </nuxt-link>
         </div>
-      </div>
+      </div> -->
       <div>
-        <h3>people</h3>
-        <table>
-          <thead>
-            <tr>
-              <th><i class="fas fa-link"></i></th>
-              <th>誰</th>
-              <th>いつ</th>
-              <th>何の人</th>
-              <th>トピック</th>
-            </tr>
-          </thead>
-          <tbody>
-            <nuxt-link
-              v-for="person in people"
-              :key="person.id"
-              :to="`/person/${person.id}`"
-              tag="tr">
-              <td class="link">
-                <nuxt-link :to="`/person/${person.id}`">
-                  <i class="fas fa-link"></i>
-                </nuxt-link>
-              </td>
-              <td class="bold">
-                {{ person.name }}
-              </td>
-              <td>
-                {{ formatDate(person.createdAt) }}
-              </td>
-              <td>
-                {{ person.what }}
-              </td>
-              <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
-              <td>
-                <ul>
-                  <li
-                    v-for="(topic, idx) in extractTopics(person.extra)"
-                    :key="topic + idx">
-                    {{ topic }}
-                  </li>
-                </ul>
-              </td>
-            </nuxt-link>
-          </tbody>
-        </table>
+        <!-- <h3>people</h3> -->
+        <people-table />
       </div>
     </div>
   </div>
@@ -99,21 +57,18 @@ import firebase from '@/plugins/firebase';
 import { Component, Vue } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
 import  attemitaModule from '@/store/attemita';
-import { User } from '@/models';
-import moment from 'moment';
+import { User, Team } from '@/models';
+import peopleTable from '@/components/peopleTable.vue';
 
 import resizableTextArea from '@/components/resizableTextArea.vue';
 import atmtHeader from '@/components/header.vue';
-
-import { Person, Team } from '@/models';
-
-moment.locale('ja');
 
 @Component({
   middleware: ['authenticate'],
   components: {
     resizableTextArea,
     atmtHeader,
+    peopleTable
   }
 })
 export default class Index extends Vue {
@@ -129,10 +84,6 @@ export default class Index extends Vue {
 
   get user(): User | null{
     return this.attemitaStore.user;
-  }
-
-  get people(): Person[] {
-    return this.attemitaStore.people;
   }
 
   get teams(): Team[] {
@@ -163,29 +114,13 @@ export default class Index extends Vue {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });}
   }
-
-  formatDate(d: Date): string{
-    if(moment().diff(moment(d), 'days') < 10)
-      return moment(d).fromNow();
-    if(moment(d).year() != moment().year())
-      return moment(d).format('YY年MM月DD日');
-    return moment(d).format('MM月DD日');
-  }
-
-  extractTopics(text: string): string[] {
-    if(text === undefined) return [];
-    const lines: string[] = text.split('\n');
-    const rawTopics = lines.filter(l => l.indexOf('## ') === 0);
-    const topics: string[] = rawTopics.map(topic => topic.substr(3)).filter(d => !!d && d.length > 0);
-    return topics;
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 #main {
   padding: 0 5vw;
-  max-width: 798px;
+  max-width: 1024px;
   margin: 24px auto auto;
   display: flex;
   justify-content: center;
@@ -210,76 +145,6 @@ export default class Index extends Vue {
 
     & > * {
       display: block;
-    }
-  }
-}
-
-table {
-  border-collapse: collapse;
-  width: 798px;
-  max-width: 100%;
-  margin: auto;
-
-  td,
-  th {
-    border: 1px solid $black;
-    padding: 1em;
-
-    ul,
-    ol {
-      padding: 0;
-    }
-
-    ul {
-      list-style: "・" inside;
-    }
-
-    &.link {
-      a,
-      a:visited {
-        color: $black;
-      }
-    }
-  }
-
-  th {
-    background-color: $black;
-    color: white;
-    border-color: white;
-    border-top: none;
-    border-bottom: none;
-
-    &:first-child {
-      border-left-color: $black;
-    }
-
-    &:last-child {
-      border-right-color: $black;
-    }
-  }
-
-  tr:hover {
-    cursor: pointer;
-
-    td {
-      background-color: $black;
-      color: white;
-      border-color: white;
-
-      &.link {
-        a,
-        a:visited {
-          color: white;
-        }
-      }
-
-      &:first-child {
-        border-left-color: $black;
-      }
-
-      &:last-child {
-        border-right-color: $black;
-      }
     }
   }
 }

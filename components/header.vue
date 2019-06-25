@@ -7,6 +7,12 @@
       class="user">
       <span class="bold">{{ user.displayName }}</span> さんでログイン中
     </p>
+    <nuxt-link
+      v-if="user"
+      class="button"
+      to="/teams">
+      チーム管理
+    </nuxt-link>
     <logout />
   </div>
 </template>
