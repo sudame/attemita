@@ -1,0 +1,57 @@
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    font-size: 12px;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  height: 100%;
+  width: 100%;
+  font-size: 16px;
+}
+
+main {
+  max-width: 729px;
+  padding: 24px;
+  margin: auto;
+}
+
+h1 {
+  border-bottom: 1px solid black;
+  padding: 0 0 12px;
+  margin: 0 auto 12px;
+}
+
+h2 {
+  margin: 0.5em auto;
+  border-left: 5px solid black;
+  border-bottom: 1px solid black;
+  padding-left: 0.5em;
+}
+
+img {
+  display: block;
+  max-width: 90%;
+  margin: 12px auto;
+  border: 1px solid black;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+ul {
+  margin-top: 0;
+}
+
+ul li {
+  padding: 0.5em 0;
+}
